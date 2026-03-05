@@ -1,0 +1,710 @@
+{% doc %}
+  @prompt
+    testimonial which has customisable colour, star anyone can review on it
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-testimonial-container-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    padding: 40px;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .ai-testimonial-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .ai-testimonial-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 10px;
+  }
+
+  .ai-testimonial-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.text_color }};
+    opacity: 0.8;
+  }
+
+  .ai-testimonial-reviews-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .ai-testimonial-review-{{ ai_gen_id }} {
+    padding: 20px;
+    background-color: {{ block.settings.review_card_bg }};
+    border-radius: {{ block.settings.review_card_radius }}px;
+    border: 1px solid {{ block.settings.review_card_border }};
+  }
+
+  .ai-testimonial-review-header-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .ai-testimonial-reviewer-{{ ai_gen_id }} {
+    font-weight: 600;
+    color: {{ block.settings.text_color }};
+    font-size: 16px;
+  }
+
+  .ai-testimonial-stars-{{ ai_gen_id }} {
+    display: flex;
+    gap: 4px;
+  }
+
+  .ai-testimonial-star-{{ ai_gen_id }} {
+    width: 18px;
+    height: 18px;
+    fill: {{ block.settings.star_color }};
+  }
+
+  .ai-testimonial-star-empty-{{ ai_gen_id }} {
+    fill: {{ block.settings.star_empty_color }};
+  }
+
+  .ai-testimonial-review-text-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .ai-testimonial-form-{{ ai_gen_id }} {
+    padding: 25px;
+    background-color: {{ block.settings.form_bg_color }};
+    border-radius: {{ block.settings.form_border_radius }}px;
+    border: 1px solid {{ block.settings.form_border_color }};
+  }
+
+  .ai-testimonial-form-title-{{ ai_gen_id }} {
+    font-size: 18px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 20px;
+    font-weight: 600;
+  }
+
+  .ai-testimonial-form-group-{{ ai_gen_id }} {
+    margin-bottom: 15px;
+  }
+
+  .ai-testimonial-label-{{ ai_gen_id }} {
+    display: block;
+    margin-bottom: 5px;
+    color: {{ block.settings.text_color }};
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .ai-testimonial-input-{{ ai_gen_id }},
+  .ai-testimonial-textarea-{{ ai_gen_id }} {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid {{ block.settings.input_border_color }};
+    border-radius: {{ block.settings.input_border_radius }}px;
+    font-size: 14px;
+    background-color: {{ block.settings.input_bg_color }};
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-testimonial-textarea-{{ ai_gen_id }} {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .ai-testimonial-rating-{{ ai_gen_id }} {
+    display: flex;
+    gap: 8px;
+    margin-top: 5px;
+  }
+
+  .ai-testimonial-rating-star-{{ ai_gen_id }} {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    fill: {{ block.settings.star_empty_color }};
+    transition: fill 0.2s ease;
+  }
+
+  .ai-testimonial-rating-star-{{ ai_gen_id }}.active {
+    fill: {{ block.settings.star_color }};
+  }
+
+  .ai-testimonial-rating-star-{{ ai_gen_id }}:hover,
+  .ai-testimonial-rating-star-{{ ai_gen_id }}.hover {
+    fill: {{ block.settings.star_color }};
+  }
+
+  .ai-testimonial-submit-{{ ai_gen_id }} {
+    width: 100%;
+    padding: 12px 24px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    border: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .ai-testimonial-submit-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg }};
+  }
+
+  .ai-testimonial-message-{{ ai_gen_id }} {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .ai-testimonial-message-success-{{ ai_gen_id }} {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+
+  .ai-testimonial-message-error-{{ ai_gen_id }} {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-testimonial-container-{{ ai_gen_id }} {
+      padding: 20px;
+    }
+  }
+{% endstyle %}
+
+<testimonial-block-{{ ai_gen_id }}
+  class="ai-testimonial-container-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-testimonial-header-{{ ai_gen_id }}">
+    {% if block.settings.title != blank %}
+      <h2 class="ai-testimonial-title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+    {% endif %}
+    {% if block.settings.subtitle != blank %}
+      <p class="ai-testimonial-subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</p>
+    {% endif %}
+  </div>
+
+  <div class="ai-testimonial-reviews-{{ ai_gen_id }}" data-reviews-container>
+    {% for i in (1..3) %}
+      {% liquid
+        assign name_key = 'review_' | append: i | append: '_name'
+        assign rating_key = 'review_' | append: i | append: '_rating'
+        assign text_key = 'review_' | append: i | append: '_text'
+        
+        assign reviewer_name = block.settings[name_key]
+        assign rating = block.settings[rating_key]
+        assign review_text = block.settings[text_key]
+      %}
+      
+      {% if reviewer_name != blank or review_text != blank %}
+        <div class="ai-testimonial-review-{{ ai_gen_id }}">
+          <div class="ai-testimonial-review-header-{{ ai_gen_id }}">
+            <div class="ai-testimonial-reviewer-{{ ai_gen_id }}">{{ reviewer_name }}</div>
+            <div class="ai-testimonial-stars-{{ ai_gen_id }}">
+              {% for star in (1..5) %}
+                {% if star <= rating %}
+                  <svg class="ai-testimonial-star-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                {% else %}
+                  <svg class="ai-testimonial-star-{{ ai_gen_id }} ai-testimonial-star-empty-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+          <p class="ai-testimonial-review-text-{{ ai_gen_id }}">{{ review_text }}</p>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="ai-testimonial-form-{{ ai_gen_id }}">
+    <h3 class="ai-testimonial-form-title-{{ ai_gen_id }}">{{ block.settings.form_title }}</h3>
+    <form data-testimonial-form>
+      <div class="ai-testimonial-form-group-{{ ai_gen_id }}">
+        <label class="ai-testimonial-label-{{ ai_gen_id }}" for="name-{{ ai_gen_id }}">Name</label>
+        <input
+          type="text"
+          id="name-{{ ai_gen_id }}"
+          name="name"
+          class="ai-testimonial-input-{{ ai_gen_id }}"
+          required
+        >
+      </div>
+
+      <div class="ai-testimonial-form-group-{{ ai_gen_id }}">
+        <label class="ai-testimonial-label-{{ ai_gen_id }}">Rating</label>
+        <div class="ai-testimonial-rating-{{ ai_gen_id }}" data-rating-input>
+          {% for i in (1..5) %}
+            <svg
+              class="ai-testimonial-rating-star-{{ ai_gen_id }}"
+              data-rating="{{ i }}"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          {% endfor %}
+        </div>
+        <input type="hidden" name="rating" data-rating-value value="5">
+      </div>
+
+      <div class="ai-testimonial-form-group-{{ ai_gen_id }}">
+        <label class="ai-testimonial-label-{{ ai_gen_id }}" for="review-{{ ai_gen_id }}">Your review</label>
+        <textarea
+          id="review-{{ ai_gen_id }}"
+          name="review"
+          class="ai-testimonial-textarea-{{ ai_gen_id }}"
+          required
+        ></textarea>
+      </div>
+
+      <button type="submit" class="ai-testimonial-submit-{{ ai_gen_id }}">
+        {{ block.settings.submit_button_text }}
+      </button>
+
+      <div class="ai-testimonial-message-{{ ai_gen_id }}" data-message style="display: none;"></div>
+    </form>
+  </div>
+</testimonial-block-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class TestimonialBlock{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.currentRating = 5;
+      }
+
+      connectedCallback() {
+        this.form = this.querySelector('[data-testimonial-form]');
+        this.ratingContainer = this.querySelector('[data-rating-input]');
+        this.ratingValue = this.querySelector('[data-rating-value]');
+        this.stars = this.querySelectorAll('.ai-testimonial-rating-star-{{ ai_gen_id }}');
+        this.messageEl = this.querySelector('[data-message]');
+        this.reviewsContainer = this.querySelector('[data-reviews-container]');
+
+        this.setupRating();
+        this.setupForm();
+        this.setRating(5);
+      }
+
+      setupRating() {
+        this.stars.forEach((star, index) => {
+          star.addEventListener('click', () => {
+            const rating = parseInt(star.dataset.rating);
+            this.setRating(rating);
+          });
+
+          star.addEventListener('mouseenter', () => {
+            const rating = parseInt(star.dataset.rating);
+            this.highlightStars(rating);
+          });
+        });
+
+        this.ratingContainer.addEventListener('mouseleave', () => {
+          this.highlightStars(this.currentRating);
+        });
+      }
+
+      setRating(rating) {
+        this.currentRating = rating;
+        this.ratingValue.value = rating;
+        this.highlightStars(rating);
+      }
+
+      highlightStars(rating) {
+        this.stars.forEach((star, index) => {
+          if (index < rating) {
+            star.classList.add('active');
+          } else {
+            star.classList.remove('active');
+          }
+        });
+      }
+
+      setupForm() {
+        this.form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleSubmit();
+        });
+      }
+
+      handleSubmit() {
+        const formData = new FormData(this.form);
+        const name = formData.get('name');
+        const rating = parseInt(formData.get('rating'));
+        const review = formData.get('review');
+
+        this.addReview(name, rating, review);
+        this.showMessage('Thank you for your review!', 'success');
+        this.form.reset();
+        this.setRating(5);
+      }
+
+      addReview(name, rating, reviewText) {
+        const reviewEl = document.createElement('div');
+        reviewEl.className = 'ai-testimonial-review-{{ ai_gen_id }}';
+        
+        let starsHTML = '';
+        for (let i = 1; i <= 5; i++) {
+          const starClass = i <= rating 
+            ? 'ai-testimonial-star-{{ ai_gen_id }}'
+            : 'ai-testimonial-star-{{ ai_gen_id }} ai-testimonial-star-empty-{{ ai_gen_id }}';
+          starsHTML += `<svg class="${starClass}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>`;
+        }
+
+        reviewEl.innerHTML = `
+          <div class="ai-testimonial-review-header-{{ ai_gen_id }}">
+            <div class="ai-testimonial-reviewer-{{ ai_gen_id }}">${this.escapeHtml(name)}</div>
+            <div class="ai-testimonial-stars-{{ ai_gen_id }}">
+              ${starsHTML}
+            </div>
+          </div>
+          <p class="ai-testimonial-review-text-{{ ai_gen_id }}">${this.escapeHtml(reviewText)}</p>
+        `;
+
+        this.reviewsContainer.insertBefore(reviewEl, this.reviewsContainer.firstChild);
+      }
+
+      showMessage(text, type) {
+        this.messageEl.textContent = text;
+        this.messageEl.className = `ai-testimonial-message-{{ ai_gen_id }} ai-testimonial-message-${type}-{{ ai_gen_id }}`;
+        this.messageEl.style.display = 'block';
+
+        setTimeout(() => {
+          this.messageEl.style.display = 'none';
+        }, 5000);
+      }
+
+      escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+    }
+
+    customElements.define('testimonial-block-{{ ai_gen_id }}', TestimonialBlock{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Customer testimonials",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Customer Reviews"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "See what our customers are saying"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Review 1"
+    },
+    {
+      "type": "text",
+      "id": "review_1_name",
+      "label": "Name",
+      "default": "Sarah Johnson"
+    },
+    {
+      "type": "range",
+      "id": "review_1_rating",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "textarea",
+      "id": "review_1_text",
+      "label": "Review text",
+      "default": "Absolutely love this product! The quality exceeded my expectations and the customer service was outstanding."
+    },
+    {
+      "type": "header",
+      "content": "Review 2"
+    },
+    {
+      "type": "text",
+      "id": "review_2_name",
+      "label": "Name",
+      "default": "Michael Chen"
+    },
+    {
+      "type": "range",
+      "id": "review_2_rating",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "textarea",
+      "id": "review_2_text",
+      "label": "Review text",
+      "default": "Great value for money. Fast shipping and the product works exactly as described. Highly recommend!"
+    },
+    {
+      "type": "header",
+      "content": "Review 3"
+    },
+    {
+      "type": "text",
+      "id": "review_3_name",
+      "label": "Name",
+      "default": "Emma Williams"
+    },
+    {
+      "type": "range",
+      "id": "review_3_rating",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "textarea",
+      "id": "review_3_text",
+      "label": "Review text",
+      "default": "This has become my go-to product. The quality is exceptional and it's made such a difference in my daily routine."
+    },
+    {
+      "type": "header",
+      "content": "Review form"
+    },
+    {
+      "type": "text",
+      "id": "form_title",
+      "label": "Form title",
+      "default": "Share your experience"
+    },
+    {
+      "type": "text",
+      "id": "submit_button_text",
+      "label": "Submit button text",
+      "default": "Submit Review"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Container border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star filled",
+      "default": "#FFD700"
+    },
+    {
+      "type": "color",
+      "id": "star_empty_color",
+      "label": "Star empty",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "header",
+      "content": "Review cards"
+    },
+    {
+      "type": "color",
+      "id": "review_card_bg",
+      "label": "Background",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "color",
+      "id": "review_card_border",
+      "label": "Border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "review_card_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Form style"
+    },
+    {
+      "type": "color",
+      "id": "form_bg_color",
+      "label": "Background",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "form_border_color",
+      "label": "Border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "form_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "input_bg_color",
+      "label": "Input background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input border",
+      "default": "#cccccc"
+    },
+    {
+      "type": "range",
+      "id": "input_border_radius",
+      "label": "Input border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg",
+      "label": "Hover background",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customer testimonials"
+    }
+  ]
+}
+{% endschema %}
